@@ -46,6 +46,7 @@ public class HubServiceImpl implements HubService {
                                     ((ScenarioAddedEvent) e).getConditions()
                                             .stream().map(this::mapCondition).toList()
                             )
+
                             .build()
             );
             case SCENARIO_REMOVED -> builder.setPayload(
@@ -69,7 +70,7 @@ public class HubServiceImpl implements HubService {
     private DeviceActionAvro mapAction(DeviceAction a) {
         return DeviceActionAvro.newBuilder()
                 .setSensorId(a.getSensorId())
-                .setType(ActionTypeAvro.valueOf(a.getActionType().name()))
+                .setType(ActionTypeAvro.valueOf(a.getType().name()))
                 .setValue(a.getValue())
                 .build();
     }

@@ -1,6 +1,6 @@
 package ru.yandex.practicum.model.enums;
 
-public enum ScenarioConditionType {
+public enum ConditionType {
     MOTION,
     LUMINOSITY,
     SWITCH,

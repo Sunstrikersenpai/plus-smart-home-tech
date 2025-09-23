@@ -4,8 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import ru.yandex.practicum.model.enums.ScenarioConditionOperation;
-import ru.yandex.practicum.model.enums.ScenarioConditionType;
+import ru.yandex.practicum.model.enums.ConditionOperation;
+import ru.yandex.practicum.model.enums.ConditionType;
 
 @Getter
 @Setter
@@ -14,10 +14,10 @@ public class ScenarioCondition {
     private String sensorId;
 
     @NotNull
-    private ScenarioConditionType type;
+    private ConditionType type;
 
     @NotNull
-    private ScenarioConditionOperation operation;
+    private ConditionOperation operation;
 
-    private int value;
+    private Object value;
 }

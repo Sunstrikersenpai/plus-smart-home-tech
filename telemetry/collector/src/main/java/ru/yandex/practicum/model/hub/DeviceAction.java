@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import ru.yandex.practicum.model.enums.DeviceActionType;
+import ru.yandex.practicum.model.enums.ActionType;
 
 @Getter
 @Setter
@@ -12,7 +12,7 @@ public class DeviceAction {
     @NotBlank
     private String sensorId;
     @NotNull
-    private DeviceActionType actionType;
+    private ActionType type;
 
     private int value;
 }
