@@ -1,4 +1,4 @@
-package avroSerializer;
+package serialization;
 
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.DatumWriter;
@@ -25,4 +25,3 @@ public class GenericAvroSerializer<T extends SpecificRecordBase> implements Seri
         }
     }
 }
-

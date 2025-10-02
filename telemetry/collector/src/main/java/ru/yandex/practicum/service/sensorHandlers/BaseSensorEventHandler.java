@@ -1,4 +1,4 @@
-package ru.yandex.practicum.service.sensorHandler;
+package ru.yandex.practicum.service.sensorHandlers;
 
 import org.apache.avro.specific.SpecificRecordBase;
 import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
