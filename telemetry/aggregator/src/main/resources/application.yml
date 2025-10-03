@@ -1,13 +1,15 @@
 app:
   kafka:
-    topics: telemetry.snapshots.v1
+    topic:
+      snapshots: telemetry.snapshots.v1
+      sensors: telemetry.sensors.v1
     producer:
       bootstrap-server: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: serialization.GenericAvroSerializer
     consumer:
       bootstrap-server: localhost:9092
-      group-id: aggregator
+      group-id: aggregator.group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: serialization.SensorEventDeserializer
       timeout-ms: 1000

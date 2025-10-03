@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:1488/plus-smart-home-tech
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+grpc:
+  client:
+    hub-router:
+      address: 'static://localhost:59090'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+
+app:
+  kafka:
+    consumer:
+      hub:
+        bootstrap-server: localhost:9092
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: serialization.HubEventDeserializer
+        group-id: hub.analyzer
+        enable-auto-commit: false
+        time-out: 1000
+      snapshot:
+        bootstrap-server: localhost:9092
+        group-id: snapshot.analyzer
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: serialization.SensorsSnapshotDeserializer
+        enable-auto-commit: false
+      topics:
+        hub-events: telemetry.hubs.v1
+        snapshots-events: telemetry.snapshots.v1
+        sensors-events: telemetry.sensors.v1

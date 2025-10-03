@@ -32,7 +32,7 @@ public class AggregationStarter {
     @EventListener(ApplicationReadyEvent.class)
     public void start() {
         try {
-            consumer.subscribe(List.of(prop.getTopics()));
+            consumer.subscribe(List.of(prop.getTopic().getSensors()));
 
             while (true) {
                 ConsumerRecords<String, SensorEventAvro> records = consumer.poll(
@@ -41,8 +41,8 @@ public class AggregationStarter {
                 for (ConsumerRecord<String, SensorEventAvro> record : records) {
                     SensorEventAvro event = record.value();
                     Optional<SensorsSnapshotAvro> snapshot = snapshotService.updateState(event);
-                    snapshot.ifPresent(s -> producer.send(
-                            new ProducerRecord<>(prop.getTopics(), s)));
+                    snapshot.ifPresent(snap -> producer.send(
+                            new ProducerRecord<>(prop.getTopic().getSnapshots(), snap)));
                 }
                 consumer.commitAsync();
             }

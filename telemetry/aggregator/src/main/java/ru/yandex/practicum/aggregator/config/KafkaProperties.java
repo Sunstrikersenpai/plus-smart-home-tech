@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "app.kafka")
 @Component
 public class KafkaProperties {
-    private String topics;
-    private Producer producer = new Producer();
-    private Consumer consumer = new Consumer();
+    private Producer producer;
+    private Consumer consumer;
+    private Topic topic;
 
     @Getter
     @Setter
@@ -31,5 +31,12 @@ public class KafkaProperties {
         private String keyDeserializer;
         private String valueDeserializer;
         private long timeoutMs;
+    }
+
+    @Getter
+    @Setter
+    public static class Topic {
+        private String sensors;
+        private String snapshots;
     }
 }
