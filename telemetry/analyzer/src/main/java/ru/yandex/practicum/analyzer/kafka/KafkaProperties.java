@@ -39,6 +39,7 @@ public class KafkaProperties {
             private String valueDeserializer;
             private String groupId;
             private boolean enableAutoCommit;
+            private long timeOut;
         }
     }
 
@@ -47,6 +48,5 @@ public class KafkaProperties {
     public static class Topics {
         private String hubEvents;
         private String snapshotsEvents;
-        private String sensorsEvents;
     }
 }

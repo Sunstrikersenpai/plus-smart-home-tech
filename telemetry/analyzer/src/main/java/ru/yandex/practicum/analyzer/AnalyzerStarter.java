@@ -2,8 +2,8 @@ package ru.yandex.practicum.analyzer;
 
 import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.analyzer.service.HubEventProcessor;
-import ru.yandex.practicum.analyzer.service.SnapshotProcessor;
+import ru.yandex.practicum.analyzer.kafka.HubEventProcessor;
+import ru.yandex.practicum.analyzer.kafka.SnapshotProcessor;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

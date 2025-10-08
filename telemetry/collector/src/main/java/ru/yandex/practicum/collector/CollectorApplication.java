@@ -1,4 +1,4 @@
-package ru.yandex.practicum.aggregator;
+package ru.yandex.practicum.collector;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,8 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-public class AggregatorApplication {
+public class CollectorApplication {
     public static void main(String[] args) {
-        SpringApplication.run(AggregatorApplication.class, args);
+        SpringApplication.run(CollectorApplication.class, args);
     }
 }

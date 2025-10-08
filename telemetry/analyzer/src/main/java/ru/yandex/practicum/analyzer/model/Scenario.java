@@ -1,13 +1,18 @@
 package ru.yandex.practicum.analyzer.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Table(name = "scenarios")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Scenario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,4 +23,22 @@ public class Scenario {
 
     @Column(nullable = false)
     private String name;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @MapKeyColumn(table = "scenario_conditions", name = "sensor_id")
+    @JoinTable(
+            name = "scenario_conditions",
+            joinColumns = @JoinColumn(name = "scenario_id"),
+            inverseJoinColumns = @JoinColumn(name = "condition_id")
+    )
+    Map<String, Condition> conditions = new HashMap<>();
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @MapKeyColumn(table = "scenario_actions", name = "sensor_id")
+    @JoinTable(
+            name = "scenario_actions",
+            joinColumns = @JoinColumn(name = "scenario_id"),
+            inverseJoinColumns = @JoinColumn(name = "action_id")
+    )
+    Map<String, Action> actions = new HashMap<>();
 }

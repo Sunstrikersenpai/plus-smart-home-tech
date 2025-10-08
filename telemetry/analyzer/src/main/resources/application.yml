@@ -20,7 +20,7 @@ app:
         bootstrap-server: localhost:9092
         key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
         value-deserializer: serialization.HubEventDeserializer
-        group-id: hub.analyzer
+        group-id: events.analyzer
         enable-auto-commit: false
         time-out: 1000
       snapshot:
@@ -29,7 +29,7 @@ app:
         key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
         value-deserializer: serialization.SensorsSnapshotDeserializer
         enable-auto-commit: false
-      topics:
-        hub-events: telemetry.hubs.v1
-        snapshots-events: telemetry.snapshots.v1
-        sensors-events: telemetry.sensors.v1
+        time-out: 500
+    topics:
+      hub-events: telemetry.hubs.v1
+      snapshots-events: telemetry.snapshots.v1
