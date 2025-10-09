@@ -29,10 +29,10 @@ public class KafkaConfig {
     public KafkaConsumer<String, SensorEventAvro> createConsumer(KafkaProperties prop) {
         Properties config = new Properties();
 
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,prop.getConsumer().getBootstrapServer());
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, prop.getConsumer().getBootstrapServer());
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, prop.getConsumer().getKeyDeserializer());
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, prop.getConsumer().getValueDeserializer());
-        config.put(ConsumerConfig.GROUP_ID_CONFIG,prop.getConsumer().getGroupId());
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, prop.getConsumer().getGroupId());
 
         return new KafkaConsumer<>(config);
     }

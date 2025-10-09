@@ -17,7 +17,7 @@ public class KafkaProperties {
 
     @Getter
     @Setter
-    public static class Producer{
+    public static class Producer {
         private String bootstrapServer;
         private String keySerializer;
         private String valueSerializer;
