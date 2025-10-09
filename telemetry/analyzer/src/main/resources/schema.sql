@@ -1,4 +1,6 @@
--- создаём таблицу scenarios
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
 CREATE TABLE IF NOT EXISTS scenarios
 (
     id     BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

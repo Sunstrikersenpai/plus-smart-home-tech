@@ -1,5 +1,6 @@
 package ru.yandex.practicum.analyzer;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.analyzer.service.HubEventProcessor;
@@ -9,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Component
+@Slf4j
 public class AnalyzerStarter implements SmartLifecycle {
 
     private final HubEventProcessor hubEventProcessor;

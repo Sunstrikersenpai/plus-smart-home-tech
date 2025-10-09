@@ -7,4 +7,4 @@ app:
 
 grpc:
   server:
-    port: 9090
+    port: 59091
