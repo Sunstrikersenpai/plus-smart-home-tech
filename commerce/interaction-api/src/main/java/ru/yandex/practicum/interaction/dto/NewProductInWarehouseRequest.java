@@ -1,6 +1,5 @@
 package ru.yandex.practicum.interaction.dto;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -20,7 +19,6 @@ public class NewProductInWarehouseRequest {
 
     private boolean fragile;
 
-    @Valid
     @NotNull
     private DimensionDto dimension;
 

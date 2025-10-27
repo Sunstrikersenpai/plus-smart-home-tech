@@ -106,7 +106,7 @@ public class WarehouseServiceImpl implements WarehouseService {
         SetProductQuantityStateRequest request = new SetProductQuantityStateRequest(item.getProductId(), state);
 
         try {
-            shoppingStoreClient.setProductQuantityState(request);
+            shoppingStoreClient.setProductQuantityState(item.getProductId(),state);
         } catch (Exception e) {
             log.warn("Failed to update quantity for product {}", item.getProductId(), e);
         }

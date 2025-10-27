@@ -1,7 +1,5 @@
 package ru.yandex.practicum.store;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +7,7 @@ import ru.yandex.practicum.interaction.api.ShoppingStoreApi;
 import ru.yandex.practicum.interaction.dto.ProductDto;
 import ru.yandex.practicum.interaction.dto.SetProductQuantityStateRequest;
 import ru.yandex.practicum.interaction.enums.ProductCategory;
+import ru.yandex.practicum.interaction.enums.QuantityState;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,34 +21,38 @@ public class ShoppingStoreController implements ShoppingStoreApi {
 
     @GetMapping
     public List<ProductDto> getProducts(
-            @RequestParam @NotNull ProductCategory category,
+            ProductCategory category,
             Pageable pageable
     ) {
         return shoppingStoreService.getProducts(category, pageable);
     }
 
     @PutMapping
-    public ProductDto createNewProduct(@RequestBody @Valid ProductDto dto) {
+    public ProductDto createNewProduct(ProductDto dto) {
         return shoppingStoreService.createNewProduct(dto);
     }
 
     @PostMapping
-    public ProductDto updateProduct(@RequestBody @Valid ProductDto dto) {
+    public ProductDto updateProduct( ProductDto dto) {
         return shoppingStoreService.updateProduct(dto);
     }
 
     @PostMapping("/removeProductFromStore")
-    public boolean removeProductFromStore(@RequestBody @NotNull UUID productId) {
+    public boolean removeProductFromStore(  UUID productId) {
         return shoppingStoreService.removeProductFromStore(productId);
     }
 
     @PostMapping("/quantityState")
-    public boolean setProductQuantityState(@RequestBody @Valid SetProductQuantityStateRequest request) {
+    public boolean setProductQuantityState(UUID productId, QuantityState quantityState) {
+        SetProductQuantityStateRequest request = SetProductQuantityStateRequest.builder()
+                .productId(productId)
+                .quantityState(quantityState)
+                .build();
         return shoppingStoreService.setProductQuantityState(request);
     }
 
     @GetMapping("/{productId}")
-    public ProductDto getProduct(@PathVariable @NotNull UUID productId) {
+    public ProductDto getProduct( UUID productId) {
         return shoppingStoreService.getProduct(productId);
     }
 }
