@@ -13,3 +13,24 @@ app:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: serialization.SensorEventDeserializer
       timeout-ms: 1000
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://localhost:1488/analyzer-db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+grpc:
+  client:
+    hub-router:
+      address: 'static://localhost:59090'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
