@@ -1,8 +1,6 @@
 spring:
   application:
     name: aggregator
-  config:
-    import: "optional:configserver:"
   cloud:
     config:
       discovery:
@@ -10,15 +8,12 @@ spring:
         serviceId: config-server
       fail-fast: true
       retry:
-        use-random-policy: true
-        max-interval: 6000
+        useRandomPolicy: true
+        max-interval: 10000
+  config:
+    import: "optional:configserver:"
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-  instance:
-    prefer-ip-address: true
-    hostname: localhost
-    instance-id: "${spring.application.name}:${random.value}"
-    lease-renewal-interval-in-seconds: 10
+  eureka:
+    client:
+      serviceUrl:
+        defaultZone: http://${eureka.instance.hostname:localhost}:${eureka.instance.port:8761}/eureka/
