@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@EnableFeignClients
+@EnableFeignClients(basePackages = "warehouse")
 @SpringBootApplication
 @ConfigurationPropertiesScan
 public class WarehouseApp {

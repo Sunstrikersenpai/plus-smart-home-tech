@@ -2,6 +2,7 @@ package cart;
 
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.interaction.dto.ChangeProductQuantityRequest;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     private final ShoppingCartRepository shoppingCartRepository;
@@ -72,6 +74,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         long newQuantity = request.getNewQuantity();
 
         ShoppingCartDto tempCart = shoppingCartMapper.toDto(cart);
+        log.info("Requesting warehouse check: {}", tempCart.getProducts());
         if (newQuantity <= 0) {
             tempCart.getProducts().remove(productId);
         } else {

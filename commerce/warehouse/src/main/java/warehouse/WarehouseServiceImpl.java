@@ -46,7 +46,6 @@ public class WarehouseServiceImpl implements WarehouseService {
                 .build();
 
         warehouseRepository.save(entity);
-        updateProductQuantityState(entity);
     }
 
     @Override
@@ -62,9 +61,12 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     @Override
     public BookedProductsDto checkProductQuantityEnoughForShoppingCart(ShoppingCartDto cartDto) {
+        log.info("Warehouse check incoming: {}", cartDto.getProducts());
+
         double totalWeight = 0;
         double totalVolume = 0;
         boolean fragileFound = false;
+
 
         for (Map.Entry<UUID, Long> entry : cartDto.getProducts().entrySet()) {
             UUID productId = entry.getKey();
@@ -74,6 +76,9 @@ public class WarehouseServiceImpl implements WarehouseService {
                     .orElseThrow(() -> new NoSpecifiedProductInWarehouseException(
                             "Product not found: " + productId));
 
+            log.info("Checking product {}: requested={}, available={}",
+                    productId, requestedQty, product.getQuantity());
+
             if (product.getQuantity() < requestedQty) {
                 throw new ProductInShoppingCartLowQuantityInWarehouse(
                         "LowQuantityInWarehouse for product: " + productId);
@@ -82,6 +87,7 @@ public class WarehouseServiceImpl implements WarehouseService {
             totalWeight += product.getWeight() * requestedQty;
             totalVolume += product.getDimension().getVolume() * requestedQty;
             if (product.isFragile()) fragileFound = true;
+
         }
 
         return BookedProductsDto.builder()
@@ -106,7 +112,7 @@ public class WarehouseServiceImpl implements WarehouseService {
         SetProductQuantityStateRequest request = new SetProductQuantityStateRequest(item.getProductId(), state);
 
         try {
-            shoppingStoreClient.setProductQuantityState(item.getProductId(),state);
+            shoppingStoreClient.setProductQuantityState(item.getProductId(), request.getQuantityState());
         } catch (Exception e) {
             log.warn("Failed to update quantity for product {}", item.getProductId(), e);
         }

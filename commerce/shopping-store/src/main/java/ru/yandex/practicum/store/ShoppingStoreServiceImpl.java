@@ -4,44 +4,46 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.interaction.dto.ProductDto;
 import ru.yandex.practicum.interaction.dto.SetProductQuantityStateRequest;
 import ru.yandex.practicum.interaction.enums.ProductCategory;
 import ru.yandex.practicum.interaction.enums.ProductState;
 import ru.yandex.practicum.interaction.exeception.ProductNotFoundException;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     private final ProductRepository storeRepository;
     private final ProductMapper productMapper;
 
     @Override
-    public List<ProductDto> getProducts(ProductCategory category, Pageable pageable) {
+    public Page<ProductDto> getProducts(ProductCategory category, Pageable pageable) {
         Page<Product> products = storeRepository.getProductByProductCategory(category, pageable);
-
-        return products.map(productMapper::toDto).getContent();
+        return products.map(productMapper::toDto);
     }
 
     @Override
     public ProductDto createNewProduct(ProductDto dto) {
-        if (storeRepository.existsByProductId(dto.getProductId())) {
-            throw new IllegalArgumentException("Product already exists: " + dto.getProductId());
+        if (dto.getProductId() != null) {
+            throw new IllegalArgumentException("Product id must be null.");
         }
-        Product product = storeRepository.save(productMapper.toEntity(dto));
+        Product product = productMapper.toEntity(dto);
+        product = storeRepository.save(product);
+
         return productMapper.toDto(product);
     }
 
     @Override
     public ProductDto updateProduct(ProductDto dto) {
+        if (dto.getProductId() == null) {
+            throw new IllegalArgumentException("Product ID must not be null");
+        }
+
         Product existing = getProductById(dto.getProductId());
         productMapper.updateEntityFromDto(dto, existing);
-        storeRepository.save(existing);
+        existing = storeRepository.save(existing);
 
         return productMapper.toDto(existing);
     }
@@ -49,8 +51,11 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     @Override
     public boolean removeProductFromStore(UUID productId) {
         Product product = getProductById(productId);
-        product.setProductState(ProductState.DEACTIVATE);
-        storeRepository.save(product);
+
+        if (product.getProductState() != ProductState.DEACTIVATE) {
+            product.setProductState(ProductState.DEACTIVATE);
+            storeRepository.save(product);
+        }
 
         return true;
     }
@@ -58,10 +63,13 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     @Override
     public boolean setProductQuantityState(SetProductQuantityStateRequest request) {
         Product product = getProductById(request.getProductId());
-        product.setQuantityState(request.getQuantityState());
-        storeRepository.save(product);
 
-        return true;
+        if (product.getQuantityState() != request.getQuantityState()) {
+            product.setQuantityState(request.getQuantityState());
+            storeRepository.save(product);
+        }
+
+        return product.getQuantityState() == request.getQuantityState();
     }
 
     @Override
@@ -70,7 +78,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     }
 
     private Product getProductById(UUID id) {
-        return storeRepository.getByProductId(id)
+        return storeRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " not found"));
     }
 }
