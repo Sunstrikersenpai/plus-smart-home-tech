@@ -1,50 +1,24 @@
 spring:
-  jpa:
-    hibernate:
-      ddl-auto: create
-  datasource:
-    url: jdbc:postgresql://localhost:1488/analyzer-db
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
+  application:
+    name: analyzer
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-server
+      fail-fast: true
+      retry:
+        use-random-policy: true
+        max-interval: 6000
 
-jpa:
-  properties:
-    hibernate:
-      dialect: org.hibernate.dialect.PostgreSQLDialect
-
-grpc:
+eureka:
   client:
-    hub-router:
-      address: 'static://localhost:59090'
-      enableKeepAlive: true
-      keepAliveWithoutCalls: true
-      negotiationType: plaintext
-
-app:
-  kafka:
-    consumer:
-      hub:
-        bootstrap-server: localhost:9092
-        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-        value-deserializer: serialization.HubEventDeserializer
-        group-id: events.analyzer
-        enable-auto-commit: false
-        time-out: 1000
-      snapshot:
-        bootstrap-server: localhost:9092
-        group-id: snapshot.analyzer
-        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-        value-deserializer: serialization.SensorsSnapshotDeserializer
-        enable-auto-commit: false
-        time-out: 500
-    topics:
-      hub-events: telemetry.hubs.v1
-      snapshots-events: telemetry.snapshots.v1
-
-logging:
-  level:
-    root: INFO
-    org.springframework.kafka: DEBUG
-    ru.yandex.practicum.analyzer: DEBUG
-    net.devh.boot.grpc.client: DEBUG
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
+    instance-id: "${spring.application.name}:${random.value}"
+    lease-renewal-interval-in-seconds: 10
