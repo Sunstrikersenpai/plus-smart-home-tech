@@ -5,6 +5,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.interaction.dto.*;
+import ru.yandex.practicum.interaction.dto.warehouse.*;
+
+import java.util.Map;
+import java.util.UUID;
 
 public interface WarehouseApi {
 
@@ -19,4 +23,13 @@ public interface WarehouseApi {
 
     @GetMapping("/api/v1/warehouse/address")
     AddressDto getWarehouseAddress();
+
+    @PostMapping("/api/v1/warehouse/assembly")
+    BookedProductsDto assemblyProductsForOrder(AssemblyProductsForOrderRequest request);
+
+    @PostMapping("/api/v1/warehouse/return")
+    void acceptReturn(Map<UUID, Long> returned);;
+
+    @PostMapping("/api/v1/warehouse/shipped")
+    void shippedToDelivery(ShippedToDeliveryRequest request);
 }

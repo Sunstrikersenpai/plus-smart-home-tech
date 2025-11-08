@@ -1,0 +1,15 @@
+server:
+  port: 0
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://localhost:1488/analyzer-db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver  

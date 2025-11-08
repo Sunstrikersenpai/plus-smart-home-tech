@@ -1,4 +1,4 @@
-package ru.yandex.practicum.interaction.dto;
+package ru.yandex.practicum.interaction.dto.warehouse;
 
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
