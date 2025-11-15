@@ -1,4 +1,4 @@
-package warehouse;
+package warehouse.service;
 
 
 import lombok.RequiredArgsConstructor;
@@ -6,13 +6,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.interaction.dto.*;
+import ru.yandex.practicum.interaction.dto.warehouse.*;
 import ru.yandex.practicum.interaction.enums.QuantityState;
 import ru.yandex.practicum.interaction.exeception.NoSpecifiedProductInWarehouseException;
 import ru.yandex.practicum.interaction.exeception.ProductInShoppingCartLowQuantityInWarehouse;
 import ru.yandex.practicum.interaction.exeception.SpecifiedProductAlreadyInWarehouseException;
+import warehouse.OrderBookingRepository;
+import warehouse.ProductInWarehouseRepository;
 import warehouse.model.Dimension;
+import warehouse.model.OrderBooking;
 import warehouse.model.ProductInWarehouse;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,6 +29,8 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     private final ProductInWarehouseRepository warehouseRepository;
     private final ShoppingStoreClient shoppingStoreClient;
+    private final OrderBookingRepository orderBookingRepository;
+    private final OrderClient orderClient;
 
     @Override
     public void newProductInWarehouse(NewProductInWarehouseRequest request) {
@@ -95,6 +102,70 @@ public class WarehouseServiceImpl implements WarehouseService {
                 .deliveryVolume(totalVolume)
                 .fragile(fragileFound)
                 .build();
+    }
+
+    @Override
+    public BookedProductsDto assemblyProductsForOrder(AssemblyProductsForOrderRequest request) {
+
+        double totalWeight = 0;
+        double totalVolume = 0;
+        boolean fragile = false;
+
+        for (Map.Entry<UUID, Long> entry : request.getProducts().entrySet()) {
+            UUID productId = entry.getKey();
+            long qty = entry.getValue();
+
+            ProductInWarehouse product = warehouseRepository.findByProductId(productId)
+                    .orElseThrow(() -> new NoSpecifiedProductInWarehouseException("Not found: " + productId));
+
+            if (product.getQuantity() < qty) {
+                throw new ProductInShoppingCartLowQuantityInWarehouse("Low quantity: " + productId);
+            }
+
+            product.setQuantity(product.getQuantity() - qty);
+            warehouseRepository.save(product);
+            updateProductQuantityState(product);
+
+            totalWeight += product.getWeight() * qty;
+            totalVolume += product.getDimension().getVolume() * qty;
+            if (product.isFragile()) fragile = true;
+        }
+
+        OrderBooking booking = OrderBooking.builder()
+                .orderId(request.getOrderId())
+                .reservedProducts(new HashMap<>(request.getProducts()))
+                .delivered(false)
+                .build();
+
+        orderBookingRepository.save(booking);
+
+        return new BookedProductsDto(totalWeight, totalVolume, fragile);
+    }
+
+    @Override
+    public void shippedToDelivery(ShippedToDeliveryRequest request) {
+        UUID orderId = request.getOrderId();
+
+        OrderBooking booking = orderBookingRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("No booking for order: " + request.getOrderId()));
+
+        booking.setDeliveryId(request.getDeliveryId());
+        booking.setDelivered(true);
+        orderBookingRepository.save(booking);
+
+        orderClient.delivery(orderId);
+    }
+
+    @Override
+    public void acceptReturn(Map<UUID, Long> returned) {
+        for (Map.Entry <UUID, Long> e : returned.entrySet()) {
+            ProductInWarehouse product = warehouseRepository.findByProductId(e.getKey())
+                    .orElseThrow(() -> new NoSpecifiedProductInWarehouseException("Product not found: " + e.getKey()));
+
+            product.setQuantity(product.getQuantity() + e.getValue());
+            warehouseRepository.save(product);
+            updateProductQuantityState(product);
+        }
     }
 
     private void updateProductQuantityState(ProductInWarehouse item) {

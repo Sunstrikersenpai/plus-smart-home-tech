@@ -3,7 +3,7 @@ package ru.yandex.practicum.interaction.api;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.interaction.dto.ChangeProductQuantityRequest;
+import ru.yandex.practicum.interaction.dto.warehouse.ChangeProductQuantityRequest;
 import ru.yandex.practicum.interaction.dto.ShoppingCartDto;
 
 import java.util.List;
